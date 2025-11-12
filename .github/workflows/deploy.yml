@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: deploy
-        uses: ukraine-firearms-dashboard/shinyapps-deploy-github-action@v1.001
+        uses: ukraine-firearms-dashboard/shinyapps-deploy-github-action@v1.002
         with:
           # account and application name (https://<accountName>.shinyapps.io/<appName>)
           appName: ukraine-firearms-dashboard
