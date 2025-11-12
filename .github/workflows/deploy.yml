@@ -23,5 +23,5 @@ jobs:
           accountToken: ${{ secrets.SHINYAPP_TOKEN }}
           accountSecret: ${{ secrets.SHINYAPP_SECRET }}
         env:
-          GITHUB_PAT: ${{ secrets.GITHUB_PAT}}
+          GITHUB_PAT: ${{ secrets.PAT_GITHUB}}
 
