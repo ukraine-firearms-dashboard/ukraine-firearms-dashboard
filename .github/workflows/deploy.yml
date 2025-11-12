@@ -22,3 +22,6 @@ jobs:
           # token and secret obtained from https://www.shinyapps.io/admin/#/tokens
           accountToken: ${{ secrets.SHINYAPP_TOKEN }}
           accountSecret: ${{ secrets.SHINYAPP_SECRET }}
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_PAT}}
+
