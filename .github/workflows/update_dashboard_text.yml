@@ -35,12 +35,22 @@ jobs:
         run: |
            Write-Host "Current Git status:"
            git status
-           if (-not (git diff --exit-code)) {
-              git add data\text\about.csv
-              git add data\text\popup_start.csv
-              git add data\text\resource_list.csv
-              git commit -am "GH Action text file added $(Get-Date)"
-              # git push https://x-access-token:${{ secrets.PAT_GITHUB }}@github.com/${{ github.repository }}.git HEAD:main
-              } else {
-              Write-Host "No changes detected, skipping commit."
-              }
+           # Set the error action preference to continue (don't stop on error)
+           $ErrorActionPreference = "Continue"
+            
+           # Get the result of the git diff --exit-code command
+            $diffResult = git diff --exit-code
+            
+           # Check if there are no changes (diffResult will be 0)
+           if ($diffResult -eq 0) {
+                Write-Host "No changes detected, skipping commit."
+           } else {
+               Write-Host "Changes detected, proceeding with commit."
+               git add data\text\about.csv
+               git add data\text\popup_start.csv
+               git add data\text\resource_list.csv
+               git commit -am "GH Action text file added $(Get-Date)"
+           }
+            
+           # Reset the error action preference to default behavior
+           $ErrorActionPreference = "Stop"
