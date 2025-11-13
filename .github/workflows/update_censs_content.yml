@@ -15,7 +15,7 @@ jobs:
       
       - name: Load packages
         run: |
-          install.packages(c("readxl", "tidyverse", "janitor", "tidygeocoder", "googledrive", "here", "duckdb", "polyglotr")
+          install.packages(c("readxl", "tidyverse", "janitor", "tidygeocoder", "googledrive", "here", "duckdb", "polyglotr"))
         
         shell: Rscript {0}
 
