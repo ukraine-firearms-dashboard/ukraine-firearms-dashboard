@@ -42,6 +42,7 @@ jobs:
            # Check if there are no changes (diffResult will be 0)
            if ($diffResult -eq 0) {
                 Write-Host "No changes detected, skipping commit."
+                 exit 0
            } else {
                Write-Host "Changes detected, proceeding with commit."
                git add data\text\about.csv
@@ -50,10 +51,6 @@ jobs:
                # Commit changes, avoid failure if no changes were added
                git commit -am "GH Action text file added $(Get-Date)"
            }
-           if ($diffResult -eq 0) {
-             Write-Host "Exiting with success as no changes were detected."
-             exit 0
-            }
 
             
 
