@@ -82,20 +82,24 @@ update_server <- function(id, parent_session = NULL) {
     id,
     function(input, output, parent_session) {
       observeEvent(input$text_update, {
+        run_workflow(
+          repo = "ukraine-firearms-dashboard",
+          workflow = "update_dashboard_text.yml"
+        )
         withProgress(
-          message = 'Data update in progress',
-          detail = 'This will take approximatively 10min',
+          message = 'Text update in progress',
+          detail = 'This will take approximatively 5min',
           value = 0,
           {
-            n <- 77L
+            n <- 100L
             for (i in seq_len(n)) {
               incProgress(1 / n)
-              Sys.sleep(10)
+              Sys.sleep(5)
             }
           }
         )
         showNotification(
-          'Data update done. Please refresh the page',
+          'Text update done. Please refresh the page',
           type = "message"
         )
       })
@@ -104,6 +108,10 @@ update_server <- function(id, parent_session = NULL) {
         run_workflow(
           repo = "ukraine-firearms-dashboard",
           workflow = "update_censs_content.yml"
+        )
+        run_workflow(
+          repo = "ukraine-firearms-images",
+          workflow = "update_censs_screenshot.yml"
         )
         withProgress(
           message = 'Data update in progress',
