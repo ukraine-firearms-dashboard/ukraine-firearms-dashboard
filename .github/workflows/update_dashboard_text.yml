@@ -9,15 +9,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
+      # - uses: r-lib/actions/setup-r@v2
+      #   with:
+      #     use-public-rspm: true
       
-      - name: Load packages
-        run: |
-          install.packages(c("data.table", "dplyr", "stringr","googledrive"))
+      # - name: Load packages
+      #   run: |
+      #     install.packages(c("data.table", "dplyr", "stringr","googledrive"))
         
-        shell: Rscript {0}
+      #   shell: Rscript {0}
 
       # - name: Update data
       #   env: 
@@ -33,12 +33,14 @@ jobs:
 
       - name: Check for changes and commit
         run: |
-          if (-not (git diff --exit-code)) {
-            git add data\text\about.csv
-            git add data\text\popup_start.csv
-            git add data\text\resource_list.csv
-            git commit -am "GH Action text file added $(Get-Date)"
-            # git push https://x-access-token:${{ secrets.PAT_GITHUB }}@github.com/${{ github.repository }}.git HEAD:main
-          } else {
-            Write-Host "No changes detected, skipping commit."
-          }
+           Write-Host "Current Git status:"
+           git status
+           if (-not (git diff --exit-code)) {
+              git add data\text\about.csv
+              git add data\text\popup_start.csv
+              git add data\text\resource_list.csv
+              git commit -am "GH Action text file added $(Get-Date)"
+              # git push https://x-access-token:${{ secrets.PAT_GITHUB }}@github.com/${{ github.repository }}.git HEAD:main
+              } else {
+              Write-Host "No changes detected, skipping commit."
+              }
