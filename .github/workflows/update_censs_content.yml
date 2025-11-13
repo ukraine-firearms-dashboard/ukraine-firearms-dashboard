@@ -25,3 +25,33 @@ jobs:
         run: |
            source("R/01_data_preparation/01_censs_clean.R")
         shell: Rscript {0}
+        
+      - name: Create or update last_text_update file
+        run: |
+           $date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+           Set-Content -Path "data/database/last_database_update.txt" -Value "Last update: $date"
+        
+      - name: Set up Git config
+        run: |
+          git config --local user.name "ukraine-firearms-dashboard"
+          git config --local user.email "ukraine.firearms.dashboard@gmail.com"
+
+      - name: Check for changes and commit
+        run: |
+           Write-Host "Current Git status:"
+           git status
+            
+           # Get the result of the git diff --exit-code command
+            $diffResult = git diff --exit-code
+            
+           # Check if there are no changes (diffResult will be 0)
+           if ($diffResult -eq 0) {
+                Write-Host "No changes detected, skipping commit."
+                 exit 0
+           } else {
+               Write-Host "Changes detected, proceeding with commit."
+               git add *
+               # Commit changes, avoid failure if no changes were added
+               git commit -am "GH Action text file added $(Get-Date)"
+               git push https://x-access-token:${{ secrets.PAT_GITHUB }}@github.com/${{ github.repository }}.git HEAD:main
+           }
