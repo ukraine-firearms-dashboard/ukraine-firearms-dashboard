@@ -1,0 +1,27 @@
+name: update_censs_content
+
+on:
+   workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      
+      - name: Load packages
+        run: |
+          install.packages(c("readxl", "tidyverse", "janitor", "tidygeocoder", "googledrive", "here", "duckdb", "polyglotr")
+        
+        shell: Rscript {0}
+
+      - name: Update data
+        env: 
+          GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN}}
+        run: |
+           source("R/01_data_preparation/01_censs_clean.R")
+        shell: Rscript {0}
