@@ -25,6 +25,11 @@ jobs:
       #   run: |
       #      source("R/01_data_preparation/02_update_text.R")
       #   shell: Rscript {0}
+      
+      - name: Create or update last_text_update file
+        run: |
+           $date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+           Set-Content -Path "data/text/last_text_update.txt" -Value "Last update: $date"
         
       - name: Set up Git config
         run: |
@@ -45,11 +50,10 @@ jobs:
                  exit 0
            } else {
                Write-Host "Changes detected, proceeding with commit."
-               git add data\text\about.csv
-               git add data\text\popup_start.csv
-               git add data\text\resource_list.csv
+               git add *
                # Commit changes, avoid failure if no changes were added
                git commit -am "GH Action text file added $(Get-Date)"
+               git push https://x-access-token:${{ secrets.PAT_GITHUB }}@github.com/${{ github.repository }}.git HEAD:main
            }
 
             
