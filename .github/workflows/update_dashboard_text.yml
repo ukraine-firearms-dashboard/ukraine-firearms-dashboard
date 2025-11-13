@@ -30,11 +30,11 @@ jobs:
         run: |
           git config --local user.name "ukraine-firearms-dashboard"
           if ! git diff --exit-code; then
-             git add /data/text/about.csv
-             git add /data/text/popup_start.csv
-             git add /data/text/resource_list.csv
-             git commit -am "GH Action text file added $(date)"
-             git push -f origin main
+                git add /data/text/about.csv
+                git add /data/text/popup_start.csv
+                git add /data/text/resource_list.csv
+                git commit -am "GH Action text file added $(date)"
+                git push -f origin main
           fi
       - name: Push changes # push the output folder to your repo
         uses: ad-m/github-push-action@master
