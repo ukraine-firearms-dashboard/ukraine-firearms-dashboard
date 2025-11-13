@@ -19,12 +19,12 @@ jobs:
         
         shell: Rscript {0}
 
-      - name: Update data
-        env: 
-          GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN}}
-        run: |
-           source("R/01_data_preparation/02_update_text.R")
-        shell: Rscript {0}
+      # - name: Update data
+      #   env: 
+      #     GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN}}
+      #   run: |
+      #      source("R/01_data_preparation/02_update_text.R")
+      #   shell: Rscript {0}
         
       - name: Set up Git config
         run: |
@@ -38,7 +38,7 @@ jobs:
             git add data\text\popup_start.csv
             git add data\text\resource_list.csv
             git commit -am "GH Action text file added $(Get-Date)"
-            git push https://x-access-token:${{ secrets.PAT_GITHUB }}@github.com/${{ github.repository }}.git HEAD:main
+            # git push https://x-access-token:${{ secrets.PAT_GITHUB }}@github.com/${{ github.repository }}.git HEAD:main
           } else {
             Write-Host "No changes detected, skipping commit."
           }
