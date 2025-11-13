@@ -48,14 +48,12 @@ jobs:
                git add data\text\popup_start.csv
                git add data\text\resource_list.csv
                # Commit changes, avoid failure if no changes were added
-               $commitResult = git commit -am "GH Action text file added $(Get-Date)"
-             
-               # Check if there was an actual commit
-               if ($commitResult -match "nothing to commit") {
-                 Write-Host "No actual changes to commit, skipping commit."
-               } else {
-                Write-Host "Commit successful."
-               }
+               git commit -am "GH Action text file added $(Get-Date)"
            }
+           if ($diffResult -eq 0) {
+             Write-Host "Exiting with success as no changes were detected."
+             exit 0
+            }
+
             
 
