@@ -17,21 +17,21 @@ ui <- page_fixed(
   useWaiter(),
   waiterPreloader(
     html = spin_loaders(id = 8, color = "white"),
-    color = "#262626"
+    color = "#494949"
   ),
   waiterShowOnLoad(
     html = spin_loaders(id = 8, color = "white"),
-    color = "#262626"
+    color = "#494949"
   ),
   disconnectMessage(
     text = "Your session has timed out. Please reload the page. \n Ваша сесія закінчилась. Будь ласка, оновіть сторінку.",
     refresh = "",
-    background = "#262626",
+    background = "#494949",
     size = 36,
     width = "full",
     top = "center",
     colour = "white",
-    overlayColour = "#262626",
+    overlayColour = "#494949",
     overlayOpacity = 1,
     css = "box-shadow: none;"
   ),
@@ -46,7 +46,7 @@ ui <- page_fixed(
   tags$head(tags$link(
     rel = "icon",
     type = "image/png",
-    href = "www/img/sas_bw.png"
+    href = "/www/img/sas_bw.png"
   )),
   tags$head(
     includeCSS("www/css/00_dashboard.css"),
@@ -55,7 +55,7 @@ ui <- page_fixed(
   ),
   # bootstrap theme
   theme = bs_theme(
-    bg = "#262626",
+    bg = "#494949",
     fg = "white",
     primary = "white",
     secondary = "#4A90E2",
@@ -74,11 +74,11 @@ ui <- page_fixed(
       local = F
     )
   ),
+  lang = 'en',
   # title
-  title = "Ukraine Firearm Knowledge Portal",
-  lang = "en",
-  # ### SECTIONS ####
-  navset_tab(
+  page_navbar(
+    title = "Ukraine Firearm Knowledge Portal",
+    # ### SECTIONS ####
     id = "dashboard",
     nav_spacer(),
     #### LOG IN ####
@@ -91,24 +91,25 @@ ui <- page_fixed(
         fill = T,
         sidebar = tagList(
           firearm_side_ui("ukr_dashboard"),
-          firearm_summary_download_ui("ukr_dashboard")
+          firearm_table_download_ui("ukr_dashboard")
+          #firearm_plots_download_ui("ukr_dashboard"),
         ),
         firearm_summary_ui("ukr_dashboard")
       )
     ),
     #### Database ####
-    nav_panel(
-      "Database/База даних",
-      page_sidebar(
-        fillable = T,
-        fill = T,
-        sidebar = tagList(
-          firearm_side_ui("ukr_dashboard_db"),
-          firearm_database_download_ui("ukr_dashboard_db")
-        ),
-        firearm_database_ui("ukr_dashboard_db")
-      )
-    ),
+    # nav_panel(
+    #   "Database/База даних",
+    #   page_sidebar(
+    #     fillable = T,
+    #     fill = T,
+    #     sidebar = tagList(
+    #       firearm_side_ui("ukr_dashboard_db"),
+    #       firearm_database_download_ui("ukr_dashboard_db")
+    #     ),
+    #     firearm_database_ui("ukr_dashboard_db")
+    #   )
+    # ),
     # #### DOCUMENTATION ####
     # nav_panel(
     #   "Documentation",
@@ -138,11 +139,11 @@ ui <- page_fixed(
 server <- function(input, output, session) {
   #### LOG IN ####
   #hide  panels
-  nav_hide(id = "dashboard", "Overview")
-  nav_hide(id = "dashboard", "Database")
-  nav_hide(id = "dashboard", "Documentation")
-  nav_hide(id = "dashboard", "About")
-  nav_hide(id = "dashboard", "Update")
+  nav_hide(id = "dashboard", "Overview/Огляд")
+  #nav_hide(id = "dashboard", "Database/База даних")
+  #nav_hide(id = "dashboard", "Documentation")
+  nav_hide(id = "dashboard", "About/Про")
+  nav_hide(id = "dashboard", "Update/Оновлення")
   #### MODULES ####
   # # log in module
   login_server("ukr_dashboard", parent_session = session)
@@ -154,13 +155,13 @@ server <- function(input, output, session) {
     palette_factor = palette_factor,
     palette_color = palette_color
   )
-  firearm_summary_server(
-    "ukr_dashboard_db",
-    firearm_table = firearm_table,
-    firearm_summary_table = firearm_summary_table,
-    palette_factor = palette_factor,
-    palette_color = palette_color
-  )
+  # firearm_summary_server(
+  #   "ukr_dashboard_db",
+  #   firearm_table = firearm_table,
+  #   firearm_summary_table = firearm_summary_table,
+  #   palette_factor = palette_factor,
+  #   palette_color = palette_color
+  # )
   # about module
   about_server("ukr_dashboard", data = about)
   # resource module
