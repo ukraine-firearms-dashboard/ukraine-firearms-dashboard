@@ -6,7 +6,7 @@ firearm_summary_ui <- function(id) {
     # grid layout
     layout_columns(
       col_widths = c(8, 4, 12),
-      row_heights = c("81vh", '150vh'),
+      row_heights = c("81vh", '95vh'),
       # map
       card(
         #card_header("Locations"),
@@ -75,7 +75,7 @@ firearm_summary_ui <- function(id) {
           fill = T,
           min_height = "80vh"
         ),
-        fill = T
+        full_screen = T
       )
     )
   ) %>%
@@ -88,14 +88,17 @@ firearm_side_ui <- function(id) {
   ns <- NS(id)
   # sidebar layout
   tagList(
-    h3("Filters"),
+    h3("Filters/Фільтри"),
     tags$div(
-      tags$div("Language", class = ".shiny-input-container .control-label"),
+      tags$div(
+        "Translate posts",
+        class = ".shiny-input-container .control-label"
+      ),
       # language selection
       tags$div(
         shinyWidgets::actionBttn(
           inputId = ns("firearm_language_eng"),
-          label = "English",
+          label = "Yes/Так",
           style = "simple",
           color = "primary",
           size = "sm",
@@ -103,7 +106,7 @@ firearm_side_ui <- function(id) {
         ),
         shinyWidgets::actionBttn(
           inputId = ns("firearm_language_ukr"),
-          label = "Українська",
+          label = "No/Ні",
           style = "simple",
           color = "primary",
           size = "sm",
@@ -116,7 +119,7 @@ firearm_side_ui <- function(id) {
     # item
     pickerInput(
       inputId = ns("firearm_item_filter"),
-      label = "Weapon type",
+      label = "Weapon type/Тип зброї",
       multiple = T,
       width = "100%",
       choices = {
@@ -132,7 +135,7 @@ firearm_side_ui <- function(id) {
     # oblast
     pickerInput(
       inputId = ns("firearm_oblast_filter"),
-      label = "Oblast",
+      label = "Oblast/Область",
       multiple = T,
       width = "100%",
       choices = {
@@ -148,7 +151,7 @@ firearm_side_ui <- function(id) {
     # date
     airDatepickerInput(
       inputId = ns("firearm_date_filter"),
-      label = "Date",
+      label = "Date/Дата",
       addon = "none",
       clearButton = T,
       autoClose = T,
@@ -206,12 +209,12 @@ firearm_side_ui <- function(id) {
     )
   )
 }
-firearm_summary_download_ui <- function(id) {
+firearm_plots_download_ui <- function(id) {
   ns <- NS(id)
   shinyWidgets::actionBttn(
     inputId = ns("download_screenshot"),
     icon = icon("download"),
-    label = "Download",
+    label = "Download plots",
     style = "simple",
     color = "primary",
     size = "sm",
@@ -278,6 +281,7 @@ firearm_summary_server <- function(
                 "post_oblast_",
                 language
               ))) |>
+              distinct() |>
               collect() |>
               pull() |>
               sort()
@@ -769,8 +773,8 @@ firearm_summary_server <- function(
             axis.text.y = element_blank(),
             axis.title = element_blank(),
             axis.ticks = element_blank(),
-            panel.background = element_rect(fill = '#262626'),
-            plot.background = element_rect(fill = '#262626', color = NA)
+            panel.background = element_rect(fill = '#494949'),
+            plot.background = element_rect(fill = '#494949', color = NA)
           )
 
         # plot histogram
@@ -850,8 +854,8 @@ firearm_summary_server <- function(
               autoexpand = TRUE
             ),
             autosize = TRUE,
-            plot_bgcolor = '#262626',
-            paper_bgcolor = '#262626',
+            plot_bgcolor = '#494949',
+            paper_bgcolor = '#494949',
             showlegend = FALSE,
             xaxis = list(
               showgrid = FALSE,
@@ -1018,7 +1022,7 @@ firearm_summary_server <- function(
               pageLength = 10,
               ordering = F,
               scrollX = TRUE,
-              scrollY = "70vh"
+              scrollY = "80vh"
             )
           ) %>%
           formatDate(
@@ -1264,8 +1268,8 @@ firearm_summary_server <- function(
               axis.text.y = element_blank(),
               axis.title = element_blank(),
               axis.ticks = element_blank(),
-              panel.background = element_rect(fill = '#262626'),
-              plot.background = element_rect(fill = '#262626', color = NA)
+              panel.background = element_rect(fill = '#494949'),
+              plot.background = element_rect(fill = '#494949', color = NA)
             )
 
           # plot histogram
@@ -1363,8 +1367,8 @@ firearm_summary_server <- function(
                 autoexpand = TRUE
               ),
               autosize = TRUE,
-              plot_bgcolor = '#262626',
-              paper_bgcolor = '#262626',
+              plot_bgcolor = '#494949',
+              paper_bgcolor = '#494949',
               showlegend = FALSE,
               xaxis = list(
                 showgrid = FALSE,
@@ -1546,7 +1550,6 @@ firearm_summary_server <- function(
         content = function(file) {
           write_xlsx(
             table_init() %>%
-              select(-post_screenshot) %>%
               rowwise() %>%
               mutate(
                 across(

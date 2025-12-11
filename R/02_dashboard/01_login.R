@@ -15,16 +15,16 @@ login_ui <- function(id) {
       title = "",
       # log in
       nav_panel(
-        "Log in",
+        "Log in/Увійти",
         textInput(
           inputId = ns("login_user_email"),
-          label = "Email",
+          label = "Email/Електронна адреса",
           width = "100%"
         ),
         textOutput(ns("login_info")),
         actionBttn(
           inputId = ns("login_button"),
-          label = "Enter",
+          label = "Enter/Увійти",
           style = "simple",
           color = "primary",
           size = "sm",
@@ -33,49 +33,49 @@ login_ui <- function(id) {
       ),
       # sign in
       nav_panel(
-        "Sign in",
+        "Sign in/Реєстрація",
         textInput(
           inputId = ns("signin_user_email"),
-          label = "Email",
+          label = "Email/Електронна адреса",
           width = "100%"
         ),
         textInput(
           inputId = ns("signin_user_name"),
-          label = "Name",
+          label = "Name/Ім'я",
           width = "100%"
         ),
         textInput(
           inputId = ns("signin_user_organisation"),
-          label = "Organisation",
+          label = "Organisation/Організація",
           width = "100%"
         ),
         selectInput(
           inputId = ns("signin_user_industry"),
-          label = "Industry sector",
+          label = "Industry sector/Сектор галузі",
           selected = "Other",
           choices = c(
-            "Agriculture",
-            "Construction",
-            "Education",
-            "Energy",
-            "Finance",
-            "Government",
-            "Healthcare",
-            "IT",
-            "Manufacturing",
-            "Media",
-            "Non-profit",
-            "Retail",
-            "Services",
-            "Transportation",
-            "Other"
+            "Agriculture/Сільське господарство",
+            "Construction/Будівництво",
+            "Education/Навчання",
+            "Energy/Енергетика",
+            "Finance/Фінанси",
+            "Government/Управління",
+            "Healthcare/Здоров'я",
+            "IT/Інформаційні технології",
+            "Manufacturing/Производство",
+            "Media/Медіа",
+            "Non-profit/Неприбуткові організації",
+            "Retail/Ритейл",
+            "Services/Послуги",
+            "Transportation/Транспорт",
+            "Other/Інше"
           ),
           width = "100%"
         ),
         textOutput(ns("signin_info")),
         actionBttn(
           inputId = ns("signin_button"),
-          label = "Enter",
+          label = "Enter/Увійти",
           style = "simple",
           color = "primary",
           size = "sm",
@@ -118,7 +118,7 @@ login_server <- function(id, parent_session, data = popup) {
                 select = T,
                 session = parent_session
               )
-              nav_show(id = "dashboard", "Database", session = parent_session)
+              #nav_show(id = "dashboard", "Database", session = parent_session)
               # nav_show(
               #   id = "dashboard",
               #   "Documentation",
@@ -141,17 +141,34 @@ login_server <- function(id, parent_session, data = popup) {
               }
               # show welcome message
               showModal(modalDialog(
-                title = "Welcome to the Ukraine Firearm Knowledge Portal/Ласкаво просимо до Порталу знань про вогнепальну зброю України",
+                title = "Welcome to the Ukraine Firearm Knowledge Portal / Ласкаво просимо до Порталу знань про вогнепальну зброю України",
+
                 HTML(
-                  data %>%
-                    unlist() %>%
-                    unname() %>%
-                    paste(collapse = "<br><br>")
+                  paste0(
+                    data %>%
+                      unlist() %>%
+                      unname() %>%
+                      paste(collapse = "<br><br>"),
+                    ## add small arms surver logo with link side by side with censs logo and link
+                    "<br><br>",
+                    "<div style='display: flex; justify-content: right;'>",
+                    "<div style='margin-right: 10px;'>",
+                    "<a href='https://censs.org/' target='_blank'>",
+                    "<img src='/www/img/censs_logo.svg' width='100'>",
+                    "</a>",
+                    "</div>",
+                    "<div style='margin-left: 10px;'>",
+                    "<a href='https://www.smallarmssurvey.org/' target='_blank'>",
+                    "<img src='/www/img/SAS-Logo-3x.png' width='100'>",
+                    "</a>",
+                    "</div>",
+                    "</div>"
+                  )
                 ),
                 easyClose = TRUE,
                 footer = tagList(
                   modalButton(
-                    "Continue to dashboard/Продовжити до панелі управління"
+                    "Continue to dashboard / Продовжити до панелі управління"
                   )
                 )
               ))
@@ -298,17 +315,25 @@ logout_server <- function(id, parent_session) {
   moduleServer(
     id,
     function(input, output, session) {
-      nav_hide(id = "dashboard", target = "Summary", session = parent_session)
-      nav_hide(id = "dashboard", target = "Database", session = parent_session)
+      nav_hide(
+        id = "dashboard",
+        target = "Overview/Огляд",
+        session = parent_session
+      )
+      #nav_hide(id = "dashboard", target = "Database", session = parent_session)
       nav_hide(
         id = "dashboard",
         target = "Documentation",
         session = parent_session
       )
-      nav_hide(id = "dashboard", target = "Log out", session = parent_session)
+      nav_hide(
+        id = "dashboard",
+        target = "Log out/Вихід",
+        session = parent_session
+      )
       nav_show(
         id = "dashboard",
-        target = "Log in",
+        target = "Log in/Увійти",
         select = T,
         session = parent_session
       )
@@ -317,13 +342,13 @@ logout_server <- function(id, parent_session) {
         nav = nav_panel(
           title = "",
           value = "logged_out",
-          "You have successfully logged out."
+          "You have successfully logged out./ Ви успішно увійшли."
         ),
         select = T,
         position = "before",
         session = parent_session
       )
-      nav_show(id = "dashboard", target = "About", session = parent_session)
+      nav_show(id = "dashboard", target = "About/Про", session = parent_session)
       gc()
     }
   )

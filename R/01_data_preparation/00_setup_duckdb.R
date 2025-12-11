@@ -42,6 +42,34 @@ dbExecute(
   )
   "
 )
+
+# create index on post_date
+
+dbExecute(
+  con,
+  "
+  CREATE INDEX IF NOT EXISTS post_date_index ON ukr_socialMedia (post_date);
+  "
+)
+
+# create index on post_item
+
+dbExecute(
+  con,
+  "
+  CREATE INDEX IF NOT EXISTS post_item_index ON ukr_socialMedia (post_item_eng);
+  "
+)
+
+# create index on post_oblast
+
+dbExecute(
+  con,
+  "
+  CREATE INDEX IF NOT EXISTS post_oblast_index ON ukr_socialMedia (post_oblast_eng);
+  "
+)
+
 #delete table if exists
 # dbExecute(con, "DROP TABLE IF EXISTS ukr_socialMedia;")
 
@@ -70,7 +98,8 @@ dbExecute(
   )
   "
 )
-
+#delete table if exists
+# dbExecute(con, "DROP TABLE IF EXISTS processed_censs_files;")
 
 # Disconnect when done
 dbDisconnect(con, shutdown = TRUE)

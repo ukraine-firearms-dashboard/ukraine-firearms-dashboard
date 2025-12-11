@@ -51,10 +51,10 @@ body {
     background: var(--bs-btn-hover-bg);
 }
 .sw-air-picker.form-control {
-  background:#262626;
+  background:#494949;
   text-align: center;
   padding: .75em;
-  border-color: #262626;
+  border-color: #494949;
 }
 #ukr_dashboard-about_content {
     max-width: 80%;
@@ -73,7 +73,7 @@ body {
 .bttn-simple.bttn-primary:focus, 
 .bttn-fill.bttn-primary:hover{
   background: white !important;
-  color: #262626;
+  color: #494949;
   font-size: 80%;
   width: 108px;
   font-weight: 700;
@@ -123,23 +123,19 @@ a.nav-link.active {
 .card,
 .card-header, 
 .card-footer, 
-.card-body {
-    background:#262626;
-    border-color: #262626;
-    box-shadow:0px 0px 0px 0px;
-}
+
 .bslib-full-screen-enter{
-  background: #262626;
+  background: #494949;
   border-color: white;
   box-shadow:0px 0px 0px 0px;
 }
 .login_pannel .card-body{
   border-radius:6px;
-  background: #262626;
+  background: #494949;
   box-shadow:0px 0px 0px 0px;
 }
 .login_pannel .bslib-card {
-  border-color: #262626;
+  border-color: #494949;
   margin-left: auto;
   margin-right: auto;
   margin-top:8rem;
@@ -200,13 +196,13 @@ a.nav-link.active {
 .air-datepicker-cell.-disabled-.-focus-,
 .air-datepicker-cell.-range-to-,
 .air-datepicker-cell.-range-from{
-    background: #262626;
+    background: #494949;
     border: none;
 }
 .air-datepicker-button, 
 .air-datepicker-cell.current-,
 .air-datepicker-body--day-name{
-    color: #262626;
+    color: #494949;
 }
 .air-datepicker-cell.-in-range-{
   background: #BBBABA;
@@ -229,7 +225,7 @@ a.nav-link.active {
 .leaflet-touch .leaflet-bar a {
     border-radius: 20px !important;
     border-width : 0px;
-    background: #262626;
+    background: #494949;
     color: white;
     opacity:0.9;
 }
@@ -248,8 +244,8 @@ a.nav-link.active {
     z-index: 1;
 }
 .bttn-material-circle.bttn-default {
-    color: #262626;
-    border-color: #262626;
+    color: #494949;
+    border-color: #494949;
     border-width: 1px;
 }
 .info_button {
@@ -320,3 +316,8 @@ h3 {
 /* .fa-person-rifle:before, .fa-file:before, .fa-calendar-days:before {
     font-size: 1px;
 }  */
+
+.bslib-card {
+  box-shadow:0px 0px 0px 0px
+}
+

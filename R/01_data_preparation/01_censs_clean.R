@@ -28,6 +28,7 @@ censs_files <- drive_find(type = 'xlsx') |>
 
 # get already processed files
 con <- dbConnect(duckdb::duckdb(), dbdir = db_path)
+
 censs_files_names_old <- dbGetQuery(
   con,
   "SELECT file_name FROM processed_censs_files"
@@ -339,7 +340,7 @@ if (length(files_to_process) > 0) {
 
     df <- df |>
       mutate(
-        post_date_month = ceiling_date(post_date, "month")
+        post_date_month = floor_date(post_date, "month")
       )
     # Connect to DuckDB ----
     con <- dbConnect(duckdb::duckdb(), dbdir = db_path)
