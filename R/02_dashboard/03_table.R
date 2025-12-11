@@ -19,12 +19,16 @@ firearm_database_ui <- function(id) {
     tags$div(class = "firearm_card")
 }
 
-firearm_database_download_ui <- function(id) {
+firearm_table_download_ui <- function(id) {
   ns <- NS(id)
   downloadButton(
     ns("download_table"),
+    label = 'Download posts',
     icon = shiny::icon("download"),
-    class = "bttn-simple bttn-primary"
+    style = "simple",
+    color = "primary",
+    size = "sm",
+    block = FALSE
   ) %>%
     tags$div(class = "download_div")
 }
