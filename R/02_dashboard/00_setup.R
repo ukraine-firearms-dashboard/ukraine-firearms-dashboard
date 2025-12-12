@@ -48,6 +48,10 @@ suppressWarnings({
     error = function(e) NA
   )
 })
+users_name <- "users.csv"
+users_path <- file.path('googledrive-temp', users_name)
+id_users_file <- drive_get("users.csv")$id
+
 
 ## DB CONNECTION ####
 dir.create("data/database/tmp", recursive = TRUE, showWarnings = FALSE)
@@ -72,7 +76,8 @@ firearm_table <- dplyr::tbl(con, "ukr_socialMedia") |>
     post_source == 'main cases' &
       !is.na(post_date) &
       !is.na(post_item_eng) &
-      !is.na(post_oblast_eng)
+      !is.na(post_oblast_eng) &
+      post_item_eng != 'None.'
   )
 firearm_summary_table <- dplyr::tbl(con, "ukr_socialMedia_summary") |>
   filter(!grepl('None', post_item_eng))
@@ -89,8 +94,11 @@ DBI::dbExecute(
     TRIM(i) AS post_item,
     TRIM(o) AS post_oblast,
     post_link,
+    post_author_ukr,
     post_author_eng,
+    post_title_ukr,
     post_title_eng,
+    post_content_ukr,
     post_content_eng
   FROM ukr_socialMedia,
        UNNEST(string_split(post_item_eng,   '; ')) AS t1(i),
@@ -100,26 +108,6 @@ DBI::dbExecute(
     AND post_item_eng IS NOT NULL
     AND post_oblast_eng IS NOT NULL
     AND post_item_eng != 'None.'
-"
-)
-
-DBI::dbExecute(
-  con,
-  "
-  CREATE OR REPLACE VIEW v_items_month AS
-  SELECT post_date_month, post_item, COUNT(*) AS post_mention
-  FROM v_base
-  GROUP BY 1,2
-"
-)
-
-DBI::dbExecute(
-  con,
-  "
-  CREATE OR REPLACE VIEW v_oblast_item AS
-  SELECT post_oblast, post_item, COUNT(*) AS post_mention
-  FROM v_base
-  GROUP BY 1,2
 "
 )
 
