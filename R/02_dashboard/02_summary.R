@@ -372,7 +372,7 @@ firearm_summary_server <- function(
         dplyr::mutate(
           post_mention_tot = sum(post_mention),
           post_item_prop = post_mention / post_mention_tot,
-          rank = dplyr::min_rank(dplyr::desc(post_item_prop))
+          rank = dplyr::row_number(dplyr::desc(post_item_prop))
         ) |>
         dplyr::filter(rank <= 2) |>
         dplyr::ungroup()
@@ -604,7 +604,7 @@ firearm_summary_server <- function(
           margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = TRUE),
           showlegend = F,
           legend = list(orientation = "h", x = 0, y = -0.15),
-          xaxis = list(fixedrange = TRUE, title = ""),
+          xaxis = list(fixedrange = TRUE, title = "", tickformat = "%b %Y"),
           yaxis = list(fixedrange = TRUE, title = ""),
           paper_bgcolor = '#494949',
           plot_bgcolor = '#494949'
