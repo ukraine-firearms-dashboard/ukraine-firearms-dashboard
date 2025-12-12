@@ -55,10 +55,16 @@ update_ui <- function(id) {
   page_fluid(
     card(
       full_screen = T,
+      card_body(
+        'New data and text are dropped into a shared Google Drive folder each month. From the dashboard’s Update page, you trigger GitHub workflows that (1) pull the latest files from Drive, (2) rebuild the internal dataset and monthly screenshots, and (3) publish the refreshed content. The screenshots are served via Cloudflare for fast loading, and the app (hosted on Posit Cloud) automatically shows the new content after the run completes and you refresh the page.'
+      )
+    ),
+    card(
+      full_screen = T,
       card_header(h2("Text update/Оновлення тексту")),
       card_body(
         markdown(
-          "Use the button below to update the dashboard text content from the Google drive. This includes the resources, about and popup content. <br> This process can take up to 4 minutes. Once the update is complete, please refresh the page to see the changes. \n Використовуйте кнопку нижче, щоб оновити текстовий вміст інформаційної панелі з Google диска. Це включає ресурси, інформацію та спливаючий вміст. <br> Цей процес може зайняти до 4 хвилин. Після завершення оновлення, будь ласка, оновіть сторінку, щоб побачити зміни."
+          "Use the button below to update the dashboard text content from the Google drive. This includes the resources, about and popup content. <br> This process can take up to 4 minutes. Once the update is complete, please refresh the page to see the changes. <br> <br> Використовуйте кнопку нижче, щоб оновити текстовий вміст інформаційної панелі з Google диска. Це включає ресурси, інформацію та спливаючий вміст. <br> Цей процес може зайняти до 4 хвилин. Після завершення оновлення, будь ласка, оновіть сторінку, щоб побачити зміни."
         ),
         actionButton(ns("text_update"), "Update text/Оновити текст")
       )
@@ -68,7 +74,7 @@ update_ui <- function(id) {
       card_header(h2("Data update/Оновлення даних")),
       card_body(
         markdown(
-          "Use the button below to update the dashboard data. The data needs to be stored in `ukraine.firearms.dashboard` Google drive in the folder `/data/Official withdrawal_Month_YY`. The folder needs to contains the `Official withdrawal_Month_YY.xlsx` file and a folder called `main cases` with the screenshots. <br> This process can take up to 10 minutes. Once the update is complete, please refresh the page to see the changes. \n Використовуйте кнопку нижче, щоб оновити дані інформаційної панелі. Дані мають бути збережені в Google диску `ukraine.firearms.dashboard` у папці `/data/Official withdrawal_Month_YY`. Папка повинна містити файл `Official withdrawal_Month_YY.xlsx` та папку під назвою `main cases` зі скріншотами. <br> Цей процес може зайняти до 10 хвилин. Після завершення оновлення, будь ласка, оновіть сторінку, щоб побачити зміни."
+          "Use the button below to update the dashboard data. The data needs to be stored in `ukraine.firearms.dashboard` Google drive in the folder `/data/Official withdrawal_Month_YY`. The folder needs to contains the `Official withdrawal_Month_YY.xlsx` file and a folder called `main cases` with the screenshots. <br> This process can take up to 10 minutes. Once the update is complete, please refresh the page to see the changes. <br> <br> Використовуйте кнопку нижче, щоб оновити дані інформаційної панелі. Дані мають бути збережені в Google диску `ukraine.firearms.dashboard` у папці `/data/Official withdrawal_Month_YY`. Папка повинна містити файл `Official withdrawal_Month_YY.xlsx` та папку під назвою `main cases` зі скріншотами. <br> Цей процес може зайняти до 10 хвилин. Після завершення оновлення, будь ласка, оновіть сторінку, щоб побачити зміни."
         ),
         actionButton(ns("data_update"), "Update data/Оновити дані")
       )

@@ -123,7 +123,7 @@ if (length(files_to_process) > 0) {
       post_oblast_longitude = longitude
     )
 
-  lapply(files_to_process[1], function(df_name) {
+  lapply(files_to_process, function(df_name) {
     #df_name <- files_to_process[1]
     print(df_name)
 
