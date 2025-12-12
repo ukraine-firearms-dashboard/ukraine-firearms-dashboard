@@ -5,6 +5,7 @@
 source("R/02_dashboard/00_setup.R")
 source("R/02_dashboard/01_login.R")
 source("R/02_dashboard/02_summary.R")
+source("R/02_dashboard/03_table.R")
 source("R/02_dashboard/05_about.R")
 source("R/02_dashboard/06_update.R")
 
