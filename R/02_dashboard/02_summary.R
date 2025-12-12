@@ -183,30 +183,29 @@ firearm_summary_server <- function(
         shinyjs::disable("firearm_oblast_filter")
 
         lang <- language_react()
+
+        # Show labels in selected language, but KEEP values in ENG (choices_eng_*).
+        item_labels <- if (lang == "eng") {
+          gsub("[.]", "", choices_eng_item)
+        } else {
+          gsub("[.]", "", choices_ukr_item)
+        }
+        oblast_labels <- if (lang == "eng") {
+          gsub("[.]", "", choices_eng_oblast)
+        } else {
+          gsub("[.]", "", choices_ukr_oblast)
+        }
+
         updatePickerInput(
           session,
           "firearm_item_filter",
-          choices = setNames(
-            if (lang == "eng") choices_eng_item else choices_ukr_item,
-            gsub(
-              "[.]",
-              "",
-              if (lang == "eng") choices_eng_item else choices_ukr_item
-            )
-          ),
+          choices = setNames(choices_eng_item, item_labels),
           selected = character(0)
         )
         updatePickerInput(
           session,
           "firearm_oblast_filter",
-          choices = setNames(
-            if (lang == "eng") choices_eng_oblast else choices_ukr_oblast,
-            gsub(
-              "[.]",
-              "",
-              if (lang == "eng") choices_eng_oblast else choices_ukr_oblast
-            )
-          ),
+          choices = setNames(choices_eng_oblast, oblast_labels),
           selected = character(0)
         )
 
@@ -248,6 +247,25 @@ firearm_summary_server <- function(
         gsub("[.]", "", m)
       } else {
         gsub("[.]", "", item_eng)
+      }
+    }
+
+    ## OBLAST DICTIONARY (ENG<->UKR) ####
+    oblast_dict <- firearm_summary_table |>
+      dplyr::distinct(post_oblast_eng, post_oblast_ukr) |>
+      dplyr::collect()
+
+    # show oblast name in current language; fallback to ENG; strip dots
+    display_oblast <- function(oblast_eng, lang) {
+      if (lang == "ukr") {
+        out <- oblast_dict$post_oblast_ukr[match(
+          oblast_eng,
+          oblast_dict$post_oblast_eng
+        )]
+        out <- ifelse(is.na(out) | out == "", oblast_eng, out)
+        return(gsub("[.]", "", out))
+      } else {
+        return(gsub("[.]", "", oblast_eng))
       }
     }
 
@@ -306,7 +324,7 @@ firearm_summary_server <- function(
 
     filtered_base <- shiny::debounce(filtered_base_raw, 300)
 
-    ## KPIs (match original intent) ####
+    ## Metric ####
     output$box_last_date <- renderText({
       d <- filtered_base()
       if (!nrow(d)) {
@@ -316,6 +334,7 @@ firearm_summary_server <- function(
     })
     output$box_posts_value <- renderText({
       d <- filtered_base()
+      lang <- language_react()
       paste0(
         format(dplyr::n_distinct(d$post_link), big.mark = ","),
         ifelse(lang == "eng", " posts", ' пости')
@@ -323,7 +342,8 @@ firearm_summary_server <- function(
     })
     output$box_mentions_value <- renderText({
       d <- filtered_base() |>
-        distinct(post_id, post_item)
+        distinct(post_link, post_item, post_oblast)
+      lang <- language_react()
       paste0(
         format(nrow(d), big.mark = ","),
         ifelse(lang == "eng", " items", ' ітемів')
@@ -334,7 +354,10 @@ firearm_summary_server <- function(
 
     ## MAP (dominant item color + legend) ####
     output$firearm_map <- leaflet::renderLeaflet({
-      df <- filtered_base()
+      df <- filtered_base() |>
+        distinct(post_link, post_item, post_oblast)
+      lang <- language_react()
+
       if (!nrow(df)) {
         return(
           leaflet::leaflet() |>
@@ -386,27 +409,25 @@ firearm_summary_server <- function(
         out[is.na(out)] <- "#888888"
         unname(out)
       }
-      lang <- language_react()
-      # display_item() should exist in your module; it shows UKR/ENG label but we color by ENG key
       lab <- function(item_eng) display_item(item_eng, lang)
+      obl <- function(oblast_eng) display_oblast(oblast_eng, lang)
 
       # Radius scaling (proportional to share, clamped for readability)
-      r_outer <- function(p) pmin(80, pmax(8, p * 90)) # 2nd item ring
-      r_inner <- function(p) pmin(80, pmax(8, p * 90)) # Top item circle
+      r_outer <- function(p) min(60, max(8, p * 60)) # 2nd item ring
+      r_inner <- function(p) min(60, max(8, p * 60)) # Top item circle
 
       # Build map
       m <- leaflet::leaflet(
         map_submit,
         options = leaflet::leafletOptions(
           attributionControl = FALSE,
-          minZoom = 6,
+          minZoom = 5,
           maxZoom = 10
         )
       ) |>
         leaflet::addProviderTiles(leaflet::providers$CartoDB.DarkMatter)
 
-      # OUTER halo: 2nd item (only where present)
-
+      # OUTER halo: 1nd item
       m <- m |>
         leaflet::addCircleMarkers(
           lng = ~post_oblast_longitude,
@@ -425,7 +446,7 @@ firearm_summary_server <- function(
           label = ~ lapply(
             paste0(
               ifelse(lang == "eng", "<b>Oblast: </b>", "<b>Область: </b>"),
-              gsub("[.]", "", post_oblast),
+              gsub("[.]", "", obl(post_oblast)),
               "<br>",
               ifelse(
                 lang == "eng",
@@ -477,8 +498,11 @@ firearm_summary_server <- function(
           ),
           group = ifelse(lang == "eng", "Top item", "2-й пункт")
         )
+      used_items <- unique(na.omit(c(
+        map_submit$post_item_1
+      )))
 
-      # INNER circle: top item (with detailed label including both items)
+      # INNER circle: 2nd item (with detailed label including both items)
       if ("post_item_2" %in% names(map_submit)) {
         m <- m |>
           leaflet::addCircleMarkers(
@@ -526,7 +550,9 @@ firearm_summary_server <- function(
 
     ## HISTOGRAM (stacked monthly bars, original style) ####
     output$firearm_hist <- plotly::renderPlotly({
+      lang <- language_react()
       df <- filtered_base() |>
+        distinct(post_date_month, post_item, post_link, post_oblast) |>
         dplyr::count(post_date_month, post_item, name = "post_mention") |>
         dplyr::arrange(post_date_month, post_item)
       if (!nrow(df)) {
@@ -538,17 +564,14 @@ firearm_summary_server <- function(
       df$post_item <- factor(df$post_item, levels = item_levels)
       cols <- unname(palette_color[levels(df$post_item)])
 
-      lang <- language_react()
       p <- plotly::plot_ly()
       for (it in levels(df$post_item)) {
         sub <- df[df$post_item == it, , drop = FALSE]
-        disp <- display_item(it, lang)
         p <- p |>
           plotly::add_bars(
             data = sub,
             x = ~post_date_month,
             y = ~post_mention,
-            name = disp,
             hovertext = ~ paste0(
               "<b>",
               ifelse(lang == "eng", "Date", "Дата"),
@@ -557,7 +580,7 @@ firearm_summary_server <- function(
               "<br><b>",
               ifelse(lang == "eng", "Item", "Пункт"),
               ":</b> ",
-              disp,
+              display_item(post_item, lang),
               "<br><b>",
               ifelse(lang == "eng", "Mentions", "Згадки"),
               ":</b> ",
@@ -571,7 +594,7 @@ firearm_summary_server <- function(
       p |>
         plotly::layout(
           barmode = "stack",
-          font = list(family = "Montserrat", color = "black"),
+          font = list(family = "Montserrat", color = "white"),
           hoverlabel = list(
             bgcolor = "white",
             bordercolor = "white",
@@ -589,15 +612,17 @@ firearm_summary_server <- function(
         plotly::config(displayModeBar = FALSE)
     })
 
-    ## PIE (donut by type, original style) ####
     ## CATEGORIES (horizontal bar plot by type) ####
     output$firearm_pie <- plotly::renderPlotly({
       bar <- filtered_base() |>
+        distinct(post_item, post_link, post_oblast) |>
         dplyr::count(post_item, name = "post_mention")
 
       if (!nrow(bar)) {
         return(plotly::plot_ly())
       }
+
+      lang <- language_react()
 
       # Keep stable color mapping (by ENG key), but display labels in current language
       item_levels <- intersect(names(palette_color), unique(bar$post_item))
@@ -605,7 +630,6 @@ firearm_summary_server <- function(
         dplyr::arrange(post_mention) |>
         dplyr::mutate(post_item = factor(post_item, levels = item_levels)) # sort big to small
 
-      lang <- language_react()
       labels_clean <- display_item(levels(bar$post_item), lang)
 
       # Re-label factor for axis, preserving the same level order
@@ -621,8 +645,7 @@ firearm_summary_server <- function(
       bar$percent <- round(100 * bar$post_mention / total_mentions, 1)
 
       # Colors aligned to factor order
-      cols <- unname(palette_color[levels(bar$post_item)])
-      item_levels <- intersect(names(palette_color), unique(df$post_item))
+      cols <- unname(palette_color[levels(bar$post_item)][y_order])
 
       plotly::plot_ly(
         data = bar,
@@ -667,7 +690,7 @@ firearm_summary_server <- function(
     ## TABLE (server-side DT, language-aware columns & correct color badges) ####
     table_init <- reactive({
       d <- filtered_base() |>
-        dplyr::arrange(post_date)
+        dplyr::arrange(desc(post_date))
 
       if (!nrow(d)) {
         return(tibble::tibble(
@@ -717,6 +740,9 @@ firearm_summary_server <- function(
         )
       )
 
+      # oblast label
+      oblast_label <- display_oblast(d$post_oblast, lang)
+
       url_base <- "https://ukraine-firearms-images.ukraine-firearms-dashboard.workers.dev/"
       screenshot <- sprintf(
         "<a href='%1$s' target='_blank'><img src='%1$s' style='height:200px; max-width:300px; object-fit:cover; cursor:zoom-in; transition:transform .18s ease;' onmouseover=\"this.style.transform='scale(5)'; this.style.zIndex=1000; this.style.position='relative';\" onmouseout=\"this.style.transform='scale(1)'; this.style.zIndex=1; this.style.position='relative';\"/></a>",
@@ -749,16 +775,63 @@ firearm_summary_server <- function(
         )
       )
 
-      tibble::tibble(
+      d <- tibble::tibble(
         post_date = as.Date(d$post_date),
         post_author = post_author,
         post_title = post_title,
         post_content = post_cont,
-        post_oblast = gsub("[.]", "", d$post_oblast),
+        post_oblast = oblast_label,
         post_item = item_badge,
         post_screenshot = screenshot,
         post_link = post_link
-      )
+      ) |>
+        dplyr::group_by(
+          post_date,
+          post_author,
+          post_title,
+          post_content,
+          post_screenshot,
+          post_link
+        ) |>
+        summarise(
+          post_oblast = paste(unique(post_oblast), collapse = ", "),
+          post_item = paste(unique(post_item), collapse = ", "),
+          .groups = "drop"
+        ) |>
+        select(
+          post_date,
+          post_author,
+          post_oblast,
+          post_item,
+          post_title,
+          post_screenshot,
+          post_content,
+          post_link
+        )
+      colnames(d) <- if (lang == "eng") {
+        c(
+          "Date",
+          "Author",
+          "Oblast",
+          "Item",
+          "Title",
+          "Screenshot",
+          "Content",
+          "Link"
+        )
+      } else {
+        c(
+          "Дата",
+          "Автор",
+          "Область",
+          "Тип",
+          "Заголовок",
+          "Скріншот",
+          "Текст",
+          "Посилання"
+        )
+      }
+      d
     })
 
     output$firearm_table <- DT::renderDT(
@@ -774,7 +847,7 @@ firearm_summary_server <- function(
             deferRender = TRUE,
             scroller = TRUE,
             scrollY = "80vh",
-            pageLength = 10,
+            pageLength = 3,
             ordering = FALSE,
             scrollX = TRUE
           )
