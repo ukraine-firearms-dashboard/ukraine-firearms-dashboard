@@ -5,8 +5,6 @@
 source("R/02_dashboard/00_setup.R")
 source("R/02_dashboard/01_login.R")
 source("R/02_dashboard/02_summary.R")
-source("R/02_dashboard/03_table.R")
-# source("R/02_dashboard/04_resource.R")
 source("R/02_dashboard/05_about.R")
 source("R/02_dashboard/06_update.R")
 
@@ -92,35 +90,10 @@ ui <- page_fixed(
         sidebar = tagList(
           firearm_side_ui("ukr_dashboard"),
           firearm_table_download_ui("ukr_dashboard")
-          #firearm_plots_download_ui("ukr_dashboard"),
         ),
         firearm_summary_ui("ukr_dashboard")
       )
     ),
-    #### Database ####
-    # nav_panel(
-    #   "Database/База даних",
-    #   page_sidebar(
-    #     fillable = T,
-    #     fill = T,
-    #     sidebar = tagList(
-    #       firearm_side_ui("ukr_dashboard_db"),
-    #       firearm_database_download_ui("ukr_dashboard_db")
-    #     ),
-    #     firearm_database_ui("ukr_dashboard_db")
-    #   )
-    # ),
-    # #### DOCUMENTATION ####
-    # nav_panel(
-    #   "Documentation",
-    #   h1("Documentation"),
-    #   layout_sidebar(
-    #     fillable = T,
-    #     fill = T,
-    #     sidebar = resource_side_ui("ukr_dashboard"),
-    #     resource_main_ui("ukr_dashboard")
-    #   )
-    # ),
     #### ABOUT ####
     nav_panel(
       "About/Про",
@@ -137,11 +110,10 @@ ui <- page_fixed(
 
 ## SERVER ####
 server <- function(input, output, session) {
+  shiny::addResourcePath("img", "./www/img")
   #### LOG IN ####
   #hide  panels
   nav_hide(id = "dashboard", "Overview/Огляд")
-  #nav_hide(id = "dashboard", "Database/База даних")
-  #nav_hide(id = "dashboard", "Documentation")
   nav_hide(id = "dashboard", "About/Про")
   nav_hide(id = "dashboard", "Update/Оновлення")
   #### MODULES ####
@@ -155,20 +127,10 @@ server <- function(input, output, session) {
     palette_factor = palette_factor,
     palette_color = palette_color
   )
-  # firearm_summary_server(
-  #   "ukr_dashboard_db",
-  #   firearm_table = firearm_table,
-  #   firearm_summary_table = firearm_summary_table,
-  #   palette_factor = palette_factor,
-  #   palette_color = palette_color
-  # )
   # about module
   about_server("ukr_dashboard", data = about)
-  # resource module
-  #resource_server("ukr_dashboard", data = resource)
   # update module
   update_server("ukr_dashboard", parent_session = session)
-  #onStop(function() dbDisconnect(con, shutdown = T))
 }
 
 shinyApp(ui = ui, server = server)
