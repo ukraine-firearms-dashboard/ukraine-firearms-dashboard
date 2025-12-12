@@ -413,8 +413,8 @@ firearm_summary_server <- function(
       obl <- function(oblast_eng) display_oblast(oblast_eng, lang)
 
       # Radius scaling (proportional to share, clamped for readability)
-      r_outer <- function(p) min(60, max(8, p * 60)) # 2nd item ring
-      r_inner <- function(p) min(60, max(8, p * 60)) # Top item circle
+      r_outer <- function(p) min(30, max(8, p * 30)) # 2nd item ring
+      r_inner <- function(p) min(30, max(8, p * 30)) # Top item circle
 
       # Build map
       m <- leaflet::leaflet(
