@@ -45,7 +45,7 @@ ui <- page_fixed(
   tags$head(tags$link(
     rel = "icon",
     type = "image/png",
-    href = "/www/img/sas_bw.png"
+    href = "img/sas_bw.png"
   )),
   tags$head(
     includeCSS("www/css/00_dashboard.css"),
