@@ -64,7 +64,14 @@ update_ui <- function(id) {
       card_header(h2("Text update/Оновлення тексту")),
       card_body(
         markdown(
-          "Use the button below to update the dashboard text content from the Google drive. This includes the resources, about and popup content. <br> This process can take up to 4 minutes. Once the update is complete, please refresh the page to see the changes. <br> <br> Використовуйте кнопку нижче, щоб оновити текстовий вміст інформаційної панелі з Google диска. Це включає ресурси, інформацію та спливаючий вміст. <br> Цей процес може зайняти до 4 хвилин. Після завершення оновлення, будь ласка, оновіть сторінку, щоб побачити зміни."
+          "Use the button below to update the dashboard text content from the Google drive. 
+          This includes the resources, about and popup content. 
+          The files need to be first downloaded, then changed and re-uploaded <br> 
+          This process can take up to 4 minutes. Once the update is complete, please refresh the page to see the changes. <br> <br> 
+          Використовуйте кнопку нижче, щоб оновити текстовий контент панелі з Google Drive. 
+        Сюди входять ресурси, «Про мене» та спливаючі вікна. <br> 
+        Файли потрібно спочатку завантажити, потім змінити і знову завантажити Цей процес може тривати до 4 хвилин. <br> 
+        Після завершення оновлення, будь ласка, оновіть сторінку, щоб побачити зміни."
         ),
         actionButton(ns("text_update"), "Update text/Оновити текст")
       )
