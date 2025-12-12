@@ -93,7 +93,6 @@ login_server <- function(id, parent_session, data = popup) {
     function(input, output, session) {
       #### log in #####
       # log in initial values
-
       output$login_info <- renderText({
         login_text()
       })
@@ -118,12 +117,6 @@ login_server <- function(id, parent_session, data = popup) {
                 select = T,
                 session = parent_session
               )
-              #nav_show(id = "dashboard", "Database", session = parent_session)
-              # nav_show(
-              #   id = "dashboard",
-              #   "Documentation",
-              #   session = parent_session
-              # )
               nav_show(id = "dashboard", "About/Про", session = parent_session)
               nav_hide(
                 id = "dashboard",
@@ -154,12 +147,12 @@ login_server <- function(id, parent_session, data = popup) {
                     "<div style='display: flex; justify-content: right;'>",
                     "<div style='margin-right: 10px;'>",
                     "<a href='https://censs.org/' target='_blank'>",
-                    "<img src='/www/img/censs_logo.svg' width='100'>",
+                    "<img src='img/censs_logo.svg' width='100'>",
                     "</a>",
                     "</div>",
                     "<div style='margin-left: 10px;'>",
                     "<a href='https://www.smallarmssurvey.org/' target='_blank'>",
-                    "<img src='/www/img/SAS-Logo-3x.png' width='100'>",
+                    "<img src='img/SAS-Logo-3x.png' width='100'>",
                     "</a>",
                     "</div>",
                     "</div>"
@@ -318,12 +311,6 @@ logout_server <- function(id, parent_session) {
       nav_hide(
         id = "dashboard",
         target = "Overview/Огляд",
-        session = parent_session
-      )
-      #nav_hide(id = "dashboard", target = "Database", session = parent_session)
-      nav_hide(
-        id = "dashboard",
-        target = "Documentation",
         session = parent_session
       )
       nav_hide(
