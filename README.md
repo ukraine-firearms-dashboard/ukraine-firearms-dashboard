@@ -11,7 +11,7 @@ The deployed dashboard can be found at: https://ukraine-firearms-dashboard-viz.s
 - Duckdb for the internal database
 - Google Drive for the social media extract and the dashboard text 
 - Cloudflare for hosting the screenshot and fast retrieval
-- Github and Posit Cloud for the dashboard deployment
+- Github and Posit Connect Cloud for the dashboard deployment
 - Github workflows for triggering data, screenshot and text update
 
 **App Modules:**
@@ -199,8 +199,8 @@ run_workflow(repo, workflow)
 * **Admin email:** `ukraine.firearms.dashboard@gmail.com` (grants Update tab access).
 * **Secrets:** stored in server env + GitHub repo secrets.
 
-xx acounts are required for the dashboard:
+Four acounts are required for the dashboard:
 - Google:  `ukraine.firearms.dashboard@gmail.com`
 - Github: based on Google identity
 - Cloudflare: based on Github identity
-- Posit Cloud: based on Github identity
+- Posit Connect Cloud: based on Github identity
